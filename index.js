@@ -5,6 +5,7 @@ const sqlite = require("sqlite");
 const HTTP_PORT = 9006;
 const HTTP_SERVER = express();
 
+HTTP_SERVER.use(express.static("./client/"));
 HTTP_SERVER.use(express.json());
 HTTP_SERVER.listen(HTTP_PORT, _ => console.log(`Listening on ${HTTP_PORT}`));
 
@@ -51,7 +52,7 @@ HTTP_SERVER.get("/stats", async (_, result) => {
 	}
 
 	try {
-		const data = await database.all("SELECT * FROM ECStats;");
+		const data = await database.all("SELECT * FROM ECStats LIMIT 200;");
 		result.status(200);
 		return result.json(data);
 	} catch (err) {
