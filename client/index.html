@@ -1,0 +1,151 @@
+<html lang="EN">
+	<head>
+		<title>EasyChat Statistics</title>
+		<meta charset="utf-8"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+	</head>
+	<body>
+		<style>
+
+		</style>
+		<h1>EasyChat Statistics</h1>
+		<hr />
+		<div style="display: inline-block;">
+			<canvas id="gamemodeCounts">gamemodeCounts</canvas>
+			<canvas id="gamemodePlayers">gamemodePlayers</canvas>
+			<canvas id="msgHourPlayerCount">msgHourPlayerCount</canvas>
+		</div>
+		<script>
+			function getRandomColor() {
+				return `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},0.5)`;
+			}
+
+			function processGamemodeCounts(stats) {
+				const gamemodes = [];
+				for (const stat of stats) {
+					if (!gamemodes[stat.Gamemode]) {
+						gamemodes[stat.Gamemode] = 1;
+					} else {
+						gamemodes[stat.Gamemode]++;
+					}
+				}
+
+				const gamemodeNames = [];
+				const gamemodeCounts = [];
+				const gamemodeColors = [];
+				for (const gamemode in gamemodes) {
+					gamemodeNames.push(gamemode);
+					gamemodeCounts.push(gamemodes[gamemode]);
+					gamemodeColors.push(getRandomColor());
+				}
+
+				const gamemodeCtx = document.getElementById("gamemodeCounts");
+				const gamemodeChart = new Chart(gamemodeCtx, {
+					type: "pie",
+					data: {
+						datasets: [{
+							data: gamemodeCounts,
+							backgroundColor: gamemodeColors
+						}],
+						labels: gamemodeNames
+					},
+					options: {
+						title: {
+							display: true,
+							text: "Gamemode per Server"
+						}
+					}
+				});
+
+				return gamemodeCtx;
+			}
+
+			function processGamemodePlayers(stats) {
+				const gamemodes = [];
+				for (const stat of stats) {
+					if (!gamemodes[stat.Gamemode]) {
+						gamemodes[stat.Gamemode] = [];
+					}
+
+					gamemodes[stat.Gamemode].push(stat.PlayersConnected);
+				}
+
+				// transforms the array of values into its average value
+				const gamemodeNames = [];
+				const gamemodeAverages = [];
+				for (const gamemode in gamemodes) {
+					gamemodeNames.push(gamemode);
+					gamemodeAverages.push(Math.round(gamemodes[gamemode].reduce((a, b) => a + b) / gamemodes[gamemode].length));
+				}
+
+				const gamemodeCtx = document.getElementById("gamemodePlayers");
+				const gamemodeChart = new Chart(gamemodeCtx, {
+					type: "bar",
+					data: {
+						datasets: [{
+							label: "Player Count",
+							backgroundColor: getRandomColor(),
+							data: gamemodeAverages,
+						}],
+						labels: gamemodeNames,
+					},
+					options: {
+						title: {
+							display: true,
+							text: "Player Count per Gamemode"
+						}
+					}
+				})
+
+				return gamemodeCtx;
+			}
+
+			function processMsgHourPlayerCount(stats) {
+				const data = [];
+				for (const stat of stats) {
+					data.push({
+						x: stat.MessagePerHour,
+						y: stat.PlayersConnected,
+						r: 5
+					})
+				}
+
+				const msgHourCtx = document.getElementById("msgHourPlayerCount");
+				const msgHourChart = new Chart(msgHourCtx, {
+					type: "bubble",
+					data: {
+						datasets: [{
+							label: "Message/Hour per Player Count",
+							backgroundColor: getRandomColor(),
+							data: data
+						}]
+					}
+				})
+
+				return msgHourCtx;
+			}
+
+			async function execute() {
+				const res = await fetch("/stats");
+				const stats = await res.json();
+
+				const charts = [
+					processGamemodeCounts(stats),
+					processGamemodePlayers(stats),
+					processMsgHourPlayerCount(stats),
+				];
+
+				setTimeout(_ => {
+					for (chart of charts) {
+						chart.style.display = 'inline-block';
+					}
+				}, 2000);
+
+				console.log("done?");
+			}
+
+			execute();
+		</script>
+	</body>
+</html>
