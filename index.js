@@ -20,9 +20,10 @@ async function createTable() {
 		FromWorkshop BOOLEAN
 	);`);
 
-	await database.exec(`INSERT INTO ECStats VALUES(100, 50, 2, 'DarkRP', 1);`);
-	await database.exec(`INSERT INTO ECStats VALUES(10, 100, 0, 'Murder', 1);`);
-	await database.exec(`INSERT INTO ECStats VALUES(2000, 95, 15, 'Sandbox', 0);`);
+	// debug
+	//await database.exec(`INSERT INTO ECStats VALUES(100, 50, 2, 'DarkRP', 1);`);
+	//await database.exec(`INSERT INTO ECStats VALUES(10, 100, 0, 'Murder', 1);`);
+	//await database.exec(`INSERT INTO ECStats VALUES(2000, 95, 15, 'Sandbox', 0);`);
 }
 
 async function tableExists() {
