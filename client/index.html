@@ -4,17 +4,17 @@
 		<meta charset="utf-8"/>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+		<link rel="stylesheet" href="index.css"/>
 	</head>
 	<body>
-		<style>
-
-		</style>
 		<h1>EasyChat Statistics</h1>
-		<hr />
-		<div style="display: inline-block;">
+		<div class="graph-container">
 			<canvas id="gamemodeCounts">gamemodeCounts</canvas>
 			<canvas id="gamemodePlayers">gamemodePlayers</canvas>
 			<canvas id="msgHourPlayerCount">msgHourPlayerCount</canvas>
+		</div>
+		<div class="graph-container">
+			<canvas>what</canvas>
 		</div>
 		<script>
 			function getRandomColor() {
@@ -116,10 +116,16 @@
 					type: "bubble",
 					data: {
 						datasets: [{
-							label: "Message/Hour per Player Count",
+							label: "Msg/H/PlyCount",
 							backgroundColor: getRandomColor(),
 							data: data
 						}]
+					},
+					options: {
+						title: {
+							display: true,
+							text: "Message/Hour per Player Count"
+						}
 					}
 				})
 
@@ -138,7 +144,7 @@
 
 				setTimeout(_ => {
 					for (chart of charts) {
-						chart.style.display = 'inline-block';
+						//chart.style.display = 'inline-block';
 					}
 				}, 2000);
 
