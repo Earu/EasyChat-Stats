@@ -8,150 +8,29 @@
 	</head>
 	<body>
 		<h1>EasyChat Statistics</h1>
-		<div class="graph-container">
-			<canvas id="gamemodeCounts">gamemodeCounts</canvas>
-			<canvas id="gamemodePlayers">gamemodePlayers</canvas>
-			<canvas id="msgHourPlayerCount">msgHourPlayerCount</canvas>
+		<div>
+			<div class="graph-container">
+				<canvas id="gamemodeCounts">gamemodeCounts</canvas>
+				<canvas id="gamemodePlayers">gamemodePlayers</canvas>
+				<canvas id="msgHourGamemode">msgHourGamemode</canvas>
+			</div>
+			<div class="graph-container">
+				<canvas id="srvWithWorkshop">srvWithWorkshop</canvas>
+				<canvas id="plyEnabled">plyEnabled</canvas>
+				<canvas id="msgHourPlayerCount">msgHourPlayerCount</canvas>
+			</div>
+			<hr/>
+			<h2>Data Entries</h2>
+			<table id="dataRows">
+				<tr>
+					<th>MessagePerHour</th>
+					<th>PercentageEnabled</th>
+					<th>PlayersConnected</th>
+					<th>Gamemode</th>
+					<th>FromWorkshop</th>
+				</tr>
+			</table>
 		</div>
-		<div class="graph-container">
-			<canvas>what</canvas>
-		</div>
-		<script>
-			function getRandomColor() {
-				return `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},0.5)`;
-			}
-
-			function processGamemodeCounts(stats) {
-				const gamemodes = [];
-				for (const stat of stats) {
-					if (!gamemodes[stat.Gamemode]) {
-						gamemodes[stat.Gamemode] = 1;
-					} else {
-						gamemodes[stat.Gamemode]++;
-					}
-				}
-
-				const gamemodeNames = [];
-				const gamemodeCounts = [];
-				const gamemodeColors = [];
-				for (const gamemode in gamemodes) {
-					gamemodeNames.push(gamemode);
-					gamemodeCounts.push(gamemodes[gamemode]);
-					gamemodeColors.push(getRandomColor());
-				}
-
-				const gamemodeCtx = document.getElementById("gamemodeCounts");
-				const gamemodeChart = new Chart(gamemodeCtx, {
-					type: "pie",
-					data: {
-						datasets: [{
-							data: gamemodeCounts,
-							backgroundColor: gamemodeColors
-						}],
-						labels: gamemodeNames
-					},
-					options: {
-						title: {
-							display: true,
-							text: "Gamemode per Server"
-						}
-					}
-				});
-
-				return gamemodeCtx;
-			}
-
-			function processGamemodePlayers(stats) {
-				const gamemodes = [];
-				for (const stat of stats) {
-					if (!gamemodes[stat.Gamemode]) {
-						gamemodes[stat.Gamemode] = [];
-					}
-
-					gamemodes[stat.Gamemode].push(stat.PlayersConnected);
-				}
-
-				// transforms the array of values into its average value
-				const gamemodeNames = [];
-				const gamemodeAverages = [];
-				for (const gamemode in gamemodes) {
-					gamemodeNames.push(gamemode);
-					gamemodeAverages.push(Math.round(gamemodes[gamemode].reduce((a, b) => a + b) / gamemodes[gamemode].length));
-				}
-
-				const gamemodeCtx = document.getElementById("gamemodePlayers");
-				const gamemodeChart = new Chart(gamemodeCtx, {
-					type: "bar",
-					data: {
-						datasets: [{
-							label: "Player Count",
-							backgroundColor: getRandomColor(),
-							data: gamemodeAverages,
-						}],
-						labels: gamemodeNames,
-					},
-					options: {
-						title: {
-							display: true,
-							text: "Player Count per Gamemode"
-						}
-					}
-				})
-
-				return gamemodeCtx;
-			}
-
-			function processMsgHourPlayerCount(stats) {
-				const data = [];
-				for (const stat of stats) {
-					data.push({
-						x: stat.MessagePerHour,
-						y: stat.PlayersConnected,
-						r: 5
-					})
-				}
-
-				const msgHourCtx = document.getElementById("msgHourPlayerCount");
-				const msgHourChart = new Chart(msgHourCtx, {
-					type: "bubble",
-					data: {
-						datasets: [{
-							label: "Msg/H/PlyCount",
-							backgroundColor: getRandomColor(),
-							data: data
-						}]
-					},
-					options: {
-						title: {
-							display: true,
-							text: "Message/Hour per Player Count"
-						}
-					}
-				})
-
-				return msgHourCtx;
-			}
-
-			async function execute() {
-				const res = await fetch("/stats");
-				const stats = await res.json();
-
-				const charts = [
-					processGamemodeCounts(stats),
-					processGamemodePlayers(stats),
-					processMsgHourPlayerCount(stats),
-				];
-
-				setTimeout(_ => {
-					for (chart of charts) {
-						//chart.style.display = 'inline-block';
-					}
-				}, 2000);
-
-				console.log("done?");
-			}
-
-			execute();
-		</script>
+		<script src="./index.js"></script>
 	</body>
 </html>
