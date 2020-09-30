@@ -84,9 +84,11 @@ function processGamemodePlayers(stats) {
 
 function processSrvWithWorkshop(stats) {
 	let averageWorkshop = 0;
-	for (stat of stats)
-		averageWorkshop += stat.FromWorkshop;
-	averageWorkshop = averageWorkshop / stats.length;
+	for (stat of stats) {
+		if (stat.FromWorkshop)
+			averageWorkshop += 1;
+	}
+	averageWorkshop = (averageWorkshop / stats.length) * 100;
 
 	const srvWithWorkshopCtx = document.getElementById("srvWithWorkshop");
 	const srvWithWorkshopChart = new Chart(srvWithWorkshopCtx, {
