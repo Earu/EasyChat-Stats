@@ -88,7 +88,7 @@ function processSrvWithWorkshop(stats) {
 		if (stat.FromWorkshop)
 			averageWorkshop += 1;
 	}
-	averageWorkshop = (averageWorkshop / stats.length) * 100;
+	averageWorkshop = Math.round((averageWorkshop / stats.length) * 100);
 
 	const srvWithWorkshopCtx = document.getElementById("srvWithWorkshop");
 	const srvWithWorkshopChart = new Chart(srvWithWorkshopCtx, {
